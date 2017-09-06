@@ -8,6 +8,7 @@
 
 Require Export Ltac2.Init.
 
+Require Ltac2.Bool.
 Require Ltac2.Int.
 Require Ltac2.String.
 Require Ltac2.Ident.
@@ -16,6 +17,7 @@ Require Ltac2.Message.
 Require Ltac2.Constr.
 Require Ltac2.Control.
 Require Ltac2.Fresh.
+Require Ltac2.List.
 Require Ltac2.Pattern.
 Require Ltac2.Std.
 Require Export Ltac2.Notations.

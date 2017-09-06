@@ -30,6 +30,7 @@ src/g_ltac2.ml4
 src/ltac2_plugin.mlpack
 
 theories/Init.v
+theories/Bool.v
 theories/Int.v
 theories/String.v
 theories/Ident.v
@@ -37,6 +38,7 @@ theories/Array.v
 theories/Control.v
 theories/Message.v
 theories/Constr.v
+theories/List.v
 theories/Pattern.v
 theories/Fresh.v
 theories/Std.v
