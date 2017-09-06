@@ -7,36 +7,9 @@
 (************************************************************************)
 
 Require Import Ltac2.Init.
-Require Ltac2.Control Ltac2.Pattern Ltac2.Array Ltac2.Int Ltac2.Std.
+Require Ltac2.Control Ltac2.Pattern Ltac2.Array Ltac2.Int Ltac2.Std Ltac2.List.
 
 (** Constr matching *)
-
-Ltac2 lazy_match0 t pats :=
-  let rec interp m := match m with
-  | [] => Control.zero Match_failure
-  | p :: m =>
-    match p with
-    | Pattern.ConstrMatchPattern pat f =>
-      Control.plus
-        (fun _ =>
-          let bind := Pattern.matches_vect pat t in
-          fun _ => f bind
-        )
-        (fun _ => interp m)
-    | Pattern.ConstrMatchContext pat f =>
-      Control.plus
-        (fun _ =>
-          let ((context, bind)) := Pattern.matches_subterm_vect pat t in
-          fun _ => f context bind
-        )
-        (fun _ => interp m)
-    end
-  end in
-  let ans := Control.once (fun () => interp pats) in
-  ans ().
-
-Ltac2 Notation "lazy_match!" t(tactic(6)) "with" m(constr_matching) "end" :=
-  lazy_match0 t m.
 
 Ltac2 multi_match0 t pats :=
   let rec interp m := match m with
@@ -68,6 +41,19 @@ Ltac2 one_match0 t m := Control.once (fun _ => multi_match0 t m).
 
 Ltac2 Notation "match!" t(tactic(6)) "with" m(constr_matching) "end" :=
   one_match0 t m.
+
+Ltac2 on_pattern_function (f : (unit -> 'a) -> 'b) (pat : 'a Pattern.constr_match) :=
+  match pat with
+  | Pattern.ConstrMatchPattern pat g
+    => Pattern.ConstrMatchPattern pat (fun bind => f (fun () => g bind))
+  | Pattern.ConstrMatchContext pat g
+    => Pattern.ConstrMatchContext pat (fun context bind => f (fun () => g context bind))
+  end.
+Ltac2 lazy_match0 t pats :=
+  one_match0 t (List.map (on_pattern_function (fun v => v)) pats) ().
+
+Ltac2 Notation "lazy_match!" t(tactic(6)) "with" m(constr_matching) "end" :=
+  lazy_match0 t m.
 
 (** Tacticals *)
 
