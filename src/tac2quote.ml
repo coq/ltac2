@@ -421,7 +421,7 @@ let of_goal_matching (loc, gm) =
       let vars = pattern_vars pat in
       (Id.Set.union vars accu, (na, ctx, pat, knd))
     in
-    let (vars, hyps_pats) = List.fold_left_map map vars hyps_pats in
+    let (vars, hyps_pats) = List.fold_map map vars hyps_pats in
     let map (_, _, pat, knd) = of_tuple [knd; of_pattern pat] in
     let concl = of_tuple [concl_knd; of_pattern concl_pat] in
     let r = of_tuple [of_list ?loc map hyps_pats; concl] in

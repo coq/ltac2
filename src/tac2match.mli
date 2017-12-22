@@ -30,4 +30,4 @@ val match_goal:
   match_rule ->
     ((Id.t * context option) list * (** List of hypotheses matching: name + context *)
     context option * (** Context for conclusion *)
-    Ltac_pretype.patvar_map (** Pattern variable substitution *)) Proofview.tactic
+    Pattern.patvar_map (** Pattern variable substitution *)) Proofview.tactic

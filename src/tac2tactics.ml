@@ -361,7 +361,7 @@ let discriminate ev arg =
 let injection ev ipat arg =
   let arg = Option.map (fun arg -> None, arg) arg in
   let ipat = Option.map mk_intro_patterns ipat in
-  let tac ev arg = Equality.injClause None ipat ev arg in
+  let tac ev arg = Equality.injClause ipat ev arg in
   on_destruction_arg tac ev arg
 
 let autorewrite ~all by ids cl =
@@ -448,10 +448,6 @@ let contradiction c =
 
 let firstorder tac refs ids =
   let open Ground_plugin in
-  (** FUCK YOU API *)
   let ids = List.map Id.to_string ids in
   let tac = Option.map (fun tac -> thaw Tac2ffi.unit tac) tac in
-  let tac : unit API.Proofview.tactic option = Obj.magic (tac : unit Proofview.tactic option) in
-  let refs : API.Globnames.global_reference list = Obj.magic (refs : Globnames.global_reference list) in
-  let ids : API.Hints.hint_db_name list = Obj.magic (ids : Hints.hint_db_name list) in
-  (Obj.magic (G_ground.gen_ground_tac true tac refs ids : unit API.Proofview.tactic) : unit Proofview.tactic)
+  G_ground.gen_ground_tac true tac refs ids

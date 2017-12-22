@@ -561,7 +561,7 @@ let () = define2 "pattern_matches_subterm" pattern constr begin fun pat c ->
     Proofview.tclOR (return ans) (fun _ -> of_ans s)
   in
   pf_apply begin fun env sigma ->
-    let ans = Constr_matching.match_subterm env sigma (Id.Set.empty,pat) c in
+    let ans = Constr_matching.match_appsubterm env sigma pat c in
     of_ans ans
   end
 end
@@ -593,7 +593,7 @@ let () = define2 "pattern_matches_subterm_vect" pattern constr begin fun pat c -
     Proofview.tclOR (return ans) (fun _ -> of_ans s)
   in
   pf_apply begin fun env sigma ->
-    let ans = Constr_matching.match_subterm env sigma (Id.Set.empty,pat) c in
+    let ans = Constr_matching.match_appsubterm env sigma pat c in
     of_ans ans
   end
 end
@@ -828,7 +828,7 @@ let open_constr_no_classes_flags () =
 let to_lvar ist =
   let open Glob_ops in
   let lfun = Tac2interp.set_env ist Id.Map.empty in
-  { empty_lvar with Ltac_pretype.ltac_genargs = lfun }
+  { empty_lvar with Glob_term.ltac_genargs = lfun }
 
 let gtypref kn = GTypRef (Other kn, [])
 
@@ -945,16 +945,15 @@ let () =
     let ist = { env_ist = Id.Map.empty } in
     let lfun = Tac2interp.set_env ist Id.Map.empty in
     let ist = Ltac_plugin.Tacinterp.default_ist () in
-    (** FUCK YOU API *)
-    let ist = { ist with API.Geninterp.lfun = (Obj.magic lfun) } in
-    let tac = (Obj.magic Ltac_plugin.Tacinterp.eval_tactic_ist ist tac : unit Proofview.tactic) in
+    let ist = { ist with Geninterp.lfun = lfun } in
+    let tac = Ltac_plugin.Tacinterp.eval_tactic_ist ist tac in
     let wrap (e, info) = set_bt info >>= fun info -> Proofview.tclZERO ~info e in
     Proofview.tclOR tac wrap >>= fun () ->
     return v_unit
   in
   let subst s tac = Genintern.substitute Ltac_plugin.Tacarg.wit_tactic s tac in
   let print env tac =
-    str "ltac1:(" ++ Ltac_plugin.Pptactic.pr_glob_tactic (Obj.magic env) tac ++ str ")"
+    str "ltac1:(" ++ Ltac_plugin.Pptactic.pr_glob_tactic env tac ++ str ")"
   in
   let obj = {
     ml_intern = intern;
@@ -987,16 +986,15 @@ let () =
   Pretyping.register_constr_interp0 wit_ltac2_quotation interp
 
 let () =
-  let pr_raw id = Genprint.PrinterBasic mt in
-  let pr_glb id = Genprint.PrinterBasic (fun () -> str "$" ++ Id.print id) in
-  let pr_top _ = Genprint.TopPrinterBasic mt in
+  let pr_raw id = mt () in
+  let pr_glb id = str "$" ++ Id.print id in
+  let pr_top _ = mt () in
   Genprint.register_print0 wit_ltac2_quotation pr_raw pr_glb pr_top
 
 (** Ltac2 in Ltac1 *)
 
 let () =
-  (** FUCK YOU API *)
-  let e = (Obj.magic Tac2entries.Pltac.tac2expr : _ API.Pcoq.Gram.entry) in
+  let e = Tac2entries.Pltac.tac2expr in
   let inject (loc, v) = Tacexpr.TacGeneric (in_gen (rawwit wit_ltac2) v) in
   Ltac_plugin.Tacentries.create_ltac_quotation "ltac2" inject (e, None)
 
@@ -1004,8 +1002,6 @@ let () =
   let open Ltac_plugin in
   let open Tacinterp in
   let idtac = Value.of_closure (default_ist ()) (Tacexpr.TacId []) in
-  (** FUCK YOU API *)
-  let idtac = (Obj.magic idtac : Geninterp.Val.t) in
   let interp ist tac =
 (*     let ist = Tac2interp.get_env ist.Geninterp.lfun in *)
     let ist = { env_ist = Id.Map.empty } in
@@ -1015,9 +1011,9 @@ let () =
   Geninterp.register_interp0 wit_ltac2 interp
 
 let () =
-  let pr_raw _ = Genprint.PrinterBasic mt in
-  let pr_glb e = Genprint.PrinterBasic (fun () -> Tac2print.pr_glbexpr e) in
-  let pr_top _ = Genprint.TopPrinterBasic mt in
+  let pr_raw _ = mt () in
+  let pr_glb e = Tac2print.pr_glbexpr e in
+  let pr_top _ = mt () in
   Genprint.register_print0 wit_ltac2 pr_raw pr_glb pr_top
 
 (** Built-in notation scopes *)

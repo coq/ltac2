@@ -91,8 +91,7 @@ let tac2def_mut = Gram.entry_create "tactic:tac2def_mut"
 let tac2def_run = Gram.entry_create "tactic:tac2def_run"
 let tac2mode = Gram.entry_create "vernac:ltac2_command"
 
-(** FUCK YOU API *)
-let ltac1_expr = (Obj.magic Pltac.tactic_expr : Tacexpr.raw_tactic_expr Gram.entry)
+let ltac1_expr = Pltac.tactic_expr
 
 let inj_wit wit loc x = Loc.tag ~loc @@ CTacExt (wit, x)
 let inj_open_constr loc c = inj_wit Tac2quote.wit_open_constr loc c
@@ -831,11 +830,10 @@ let classify_ltac2 = function
 | StrSyn _ -> Vernacexpr.VtUnknown, Vernacexpr.VtNow
 | StrMut _ | StrVal _ | StrPrm _  | StrTyp _ | StrRun _ -> Vernac_classifier.classify_as_sideeff
 
-VERNAC COMMAND FUNCTIONAL EXTEND VernacDeclareTactic2Definition
+VERNAC COMMAND EXTEND VernacDeclareTactic2Definition
 | [ "Ltac2" ltac2_entry(e) ] => [ classify_ltac2 e ] -> [
-    fun ~atts ~st -> let open Vernacinterp in
-    Tac2entries.register_struct ?local:atts.locality e;
-    st
+    let local = Locality.LocalityFixme.consume () in
+    Tac2entries.register_struct ?local e
   ]
 END
 
