@@ -116,8 +116,8 @@ type red_flag_r =
 | QFix
 | QCofix
 | QZeta
-| QConst of Libnames.reference or_anti list CAst.t
-| QDeltaBut of Libnames.reference or_anti list CAst.t
+| QConst of Libnames.qualid or_anti list CAst.t
+| QDeltaBut of Libnames.qualid or_anti list CAst.t
 
 type red_flag = red_flag_r CAst.t
 

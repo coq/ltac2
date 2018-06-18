@@ -82,10 +82,10 @@ let inj_wit ?loc wit x =
   CAst.make ?loc @@ CTacExt (wit, x)
 
 let of_variable {loc;v=id} =
-  let qid = Libnames.qualid_of_ident id in
+  let qid = Libnames.qualid_of_ident ?loc id in
   if Tac2env.is_constructor qid then
     CErrors.user_err ?loc (str "Invalid identifier")
-  else CAst.make ?loc @@ CTacRef (RelId (CAst.make ?loc qid))
+  else CAst.make ?loc @@ CTacRef (RelId qid)
 
 let of_anti f = function
 | QExpr x -> f x
@@ -342,7 +342,7 @@ let make_red_flag l =
      rZeta = false; rDelta = false; rConst = []}
     l
 
-let of_reference r =
+let of_qualid r =
   let of_ref ref =
     inj_wit ?loc:ref.loc wit_reference ref
   in
@@ -358,7 +358,7 @@ let of_strategy_flag {loc;v=flag} =
     std_proj "rCofix", of_bool ?loc flag.rCofix;
     std_proj "rZeta", of_bool ?loc flag.rZeta;
     std_proj "rDelta", of_bool ?loc flag.rDelta;
-    std_proj "rConst", of_list ?loc of_reference flag.rConst;
+    std_proj "rConst", of_list ?loc of_qualid flag.rConst;
   ])
 
 let of_hintdb {loc;v=hdb} = match hdb with

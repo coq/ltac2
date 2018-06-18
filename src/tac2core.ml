@@ -910,16 +910,16 @@ let () =
   define_ml_object Tac2quote.wit_pattern obj
 
 let () =
-  let intern self ist qid = match qid with
-  | {CAst.v=Libnames.Ident id} ->
-    GlbVal (Globnames.VarRef id), gtypref t_reference
-  | {CAst.loc;v=Libnames.Qualid qid} ->
-    let gr =
-      try Nametab.locate qid
-      with Not_found ->
-        Nametab.error_global_not_found (CAst.make ?loc qid)
-    in
-    GlbVal gr, gtypref t_reference
+  let intern self ist qid =
+    if Libnames.qualid_is_ident qid then
+      GlbVal (Globnames.VarRef (Libnames.qualid_basename qid)), gtypref t_reference
+    else
+      let gr =
+        try Nametab.locate qid
+        with Not_found ->
+          Nametab.error_global_not_found qid
+      in
+      GlbVal gr, gtypref t_reference
   in
   let subst s c = Globnames.subst_global_reference s c in
   let interp _ gr = return (Value.of_reference gr) in
@@ -1167,7 +1167,7 @@ let () = add_expr_scope "hintdb" q_hintdb Tac2quote.of_hintdb
 let () = add_expr_scope "occurrences" q_occurrences Tac2quote.of_occurrences
 let () = add_expr_scope "dispatch" q_dispatch Tac2quote.of_dispatch
 let () = add_expr_scope "strategy" q_strategy_flag Tac2quote.of_strategy_flag
-let () = add_expr_scope "reference" q_reference Tac2quote.of_reference
+let () = add_expr_scope "reference" q_reference Tac2quote.of_qualid
 let () = add_expr_scope "move_location" q_move_location Tac2quote.of_move_location
 let () = add_expr_scope "pose" q_pose Tac2quote.of_pose
 let () = add_expr_scope "assert" q_assert Tac2quote.of_assertion

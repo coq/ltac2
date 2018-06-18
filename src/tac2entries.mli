@@ -16,7 +16,7 @@ val register_ltac : ?local:bool -> ?mut:bool -> rec_flag ->
   (Misctypes.lname * raw_tacexpr) list -> unit
 
 val register_type : ?local:bool -> rec_flag ->
-  (qualid CAst.t * redef_flag * raw_quant_typedef) list -> unit
+  (qualid * redef_flag * raw_quant_typedef) list -> unit
 
 val register_primitive : ?local:bool ->
   Misctypes.lident -> raw_typexpr -> ml_tactic_name -> unit
@@ -41,7 +41,7 @@ val parse_scope : sexpr -> scope_rule
 
 (** {5 Inspecting} *)
 
-val print_ltac : Libnames.reference -> unit
+val print_ltac : Libnames.qualid -> unit
 
 (** {5 Eval loop} *)
 
@@ -74,7 +74,7 @@ val q_rewriting : rewriting Pcoq.Gram.entry
 val q_clause : clause Pcoq.Gram.entry
 val q_dispatch : dispatch Pcoq.Gram.entry
 val q_occurrences : occurrences Pcoq.Gram.entry
-val q_reference : Libnames.reference or_anti Pcoq.Gram.entry
+val q_reference : Libnames.qualid or_anti Pcoq.Gram.entry
 val q_strategy_flag : strategy_flag Pcoq.Gram.entry
 val q_constr_matching : constr_matching Pcoq.Gram.entry
 val q_goal_matching : goal_matching Pcoq.Gram.entry

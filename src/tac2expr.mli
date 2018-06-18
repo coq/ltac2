@@ -27,7 +27,7 @@ type tacref =
 | TacAlias of ltac_alias
 
 type 'a or_relid =
-| RelId of qualid CAst.t
+| RelId of qualid
 | AbsKn of 'a
 
 (** {5 Misc} *)
@@ -161,13 +161,13 @@ type sexpr =
 type strexpr =
 | StrVal of mutable_flag * rec_flag * (Misctypes.lname * raw_tacexpr) list
   (** Term definition *)
-| StrTyp of rec_flag * (qualid CAst.t * redef_flag * raw_quant_typedef) list
+| StrTyp of rec_flag * (qualid * redef_flag * raw_quant_typedef) list
   (** Type definition *)
 | StrPrm of Misctypes.lident * raw_typexpr * ml_tactic_name
   (** External definition *)
 | StrSyn of sexpr list * int option * raw_tacexpr
   (** Syntactic extensions *)
-| StrMut of qualid CAst.t * raw_tacexpr
+| StrMut of qualid * raw_tacexpr
   (** Redefinition of mutable globals *)
 | StrRun of raw_tacexpr
   (** Toplevel evaluation of an expression *)
