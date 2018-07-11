@@ -1,4 +1,4 @@
--R theories/ Ltac2
+-R Ltac2/ Ltac2
 -I src/
 
 src/tac2dyn.ml
@@ -33,16 +33,16 @@ src/tac2stdlib.mli
 src/g_ltac2.ml4
 src/ltac2_plugin.mlpack
 
-theories/Init.v
-theories/Int.v
-theories/String.v
-theories/Ident.v
-theories/Array.v
-theories/Control.v
-theories/Message.v
-theories/Constr.v
-theories/Pattern.v
-theories/Fresh.v
-theories/Std.v
-theories/Notations.v
-theories/Ltac2.v
+Ltac2/Init.v
+Ltac2/Int.v
+Ltac2/String.v
+Ltac2/Ident.v
+Ltac2/Array.v
+Ltac2/Control.v
+Ltac2/Message.v
+Ltac2/Constr.v
+Ltac2/Pattern.v
+Ltac2/Fresh.v
+Ltac2/Std.v
+Ltac2/Notations.v
+Ltac2/Ltac2.v
