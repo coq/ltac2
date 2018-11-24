@@ -29,7 +29,7 @@ val register_notation : ?local:bool -> sexpr list -> int option ->
 (** {5 Notations} *)
 
 type scope_rule =
-| ScopeRule : (raw_tacexpr, 'a) Extend.symbol * ('a -> raw_tacexpr) -> scope_rule
+| ScopeRule : (raw_tacexpr, 'a) Pcoq.symbol * ('a -> raw_tacexpr) -> scope_rule
 
 type scope_interpretation = sexpr list -> scope_rule
 
