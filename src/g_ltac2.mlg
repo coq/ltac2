@@ -891,7 +891,7 @@ let classify_ltac2 = function
 
 VERNAC COMMAND EXTEND VernacDeclareTactic2Definition
 | #[ local = locality ] ![proof] [ "Ltac2" ltac2_entry(e) ] => { classify_ltac2 e } -> {
-  fun ~pstate -> Tac2entries.register_struct ?local ~pstate e; pstate
+  fun ~ontop -> Tac2entries.register_struct ?local ~ontop e; ontop
   }
 END
 
@@ -917,8 +917,8 @@ VERNAC { tac2mode } EXTEND VernacLtac2
 | ![proof] [ ltac2_expr(t) ltac_use_default(default) ] =>
     { classify_as_proofstep } -> {
 (*     let g = Option.default (Proof_global.get_default_goal_selector ()) g in *)
-  fun ~pstate ->
-    Option.map (fun pstate -> Tac2entries.call ~pstate ~default t) pstate
+  fun ~ontop ->
+    Option.map (fun ontop -> Tac2entries.call ~ontop ~default t) ontop
   }
 END
 

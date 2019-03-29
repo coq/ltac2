@@ -23,7 +23,7 @@ val register_primitive : ?local:bool ->
 
 val register_struct
   :  ?local:bool
-  -> pstate:Proof_global.t option
+  -> ontop:Lemmas.t option
   -> strexpr
   -> unit
 
@@ -50,7 +50,7 @@ val print_ltac : Libnames.qualid -> unit
 (** {5 Eval loop} *)
 
 (** Evaluate a tactic expression in the current environment *)
-val call : pstate:Proof_global.t -> default:bool -> raw_tacexpr -> Proof_global.t
+val call : ontop:Lemmas.t -> default:bool -> raw_tacexpr -> Lemmas.t
 
 (** {5 Toplevel exceptions} *)
 
